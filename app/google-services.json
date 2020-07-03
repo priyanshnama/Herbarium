@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "576830076509",
+    "firebase_url": "https://herbarium123.firebaseio.com",
+    "project_id": "herbarium123",
+    "storage_bucket": "herbarium123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576830076509:android:9d066792edf2b0b7127fb4",
+        "android_client_info": {
+          "package_name": "com.priyanshnama.herbarium"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576830076509-tuqm2rmrjnokfn9vrbic3ahdb9ksdv3p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.priyanshnama.herbarium",
+            "certificate_hash": "b09f5994d38ca0fd597189aee0fa2c1c737e666b"
+          }
+        },
+        {
+          "client_id": "576830076509-u2guf38etlkh1m9dfq462gdf23c04aan.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoLigk1rhM-SsKBE6hwGAnsu9axU0W6so"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576830076509-u2guf38etlkh1m9dfq462gdf23c04aan.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
