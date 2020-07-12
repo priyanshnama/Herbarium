@@ -41,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
         get_fcm();
-        if (mAuth.getCurrentUser() == null)  GoogleSignIn();
-        else open_home();
+        if (mAuth.getCurrentUser() != null)  open_home();
+        findViewById(R.id.google_sign_in).setOnClickListener(v -> GoogleSignIn());
     }
 
     private void get_fcm() {
