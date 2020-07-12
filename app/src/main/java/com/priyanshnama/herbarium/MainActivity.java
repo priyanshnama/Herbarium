@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private GoogleSignInClient mGoogleSignInClient;
+    private SignInButton google_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         progressBar = findViewById(R.id.progressBar);
+        google_button = findViewById(R.id.google_sign_in);
         progressBar.setVisibility(View.INVISIBLE);
+        google_button.setVisibility(View.VISIBLE);
         get_fcm();
         if (mAuth.getCurrentUser() != null)  open_home();
-        findViewById(R.id.google_sign_in).setOnClickListener(v -> GoogleSignIn());
+
+
+        google_button.setOnClickListener(v -> GoogleSignIn());
     }
 
     private void get_fcm() {
@@ -66,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private void GoogleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         progressBar.setVisibility(View.VISIBLE);
+        google_button.setVisibility(View.INVISIBLE);
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
     }
 
@@ -114,5 +122,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         progressBar.setVisibility(View.INVISIBLE);
+        google_button.setVisibility(View.VISIBLE);
     }
 }
