@@ -2,9 +2,7 @@ package com.priyanshnama.herbarium;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,7 +18,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Objects;
 
@@ -33,54 +30,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null)  open_home();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        mAuth = FirebaseAuth.getInstance();
+        progressBar = findViewById(R.id.progressBar);
+        google_button = findViewById(R.id.google_sign_in);
+        progressBar.setVisibility(View.INVISIBLE);
+        google_button.setVisibility(View.VISIBLE);
+
+        google_button.setOnClickListener(v -> GoogleSignIn());
+    }
+
+    private void GoogleSignIn() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        progressBar = findViewById(R.id.progressBar);
-        google_button = findViewById(R.id.google_sign_in);
-        progressBar.setVisibility(View.INVISIBLE);
-        google_button.setVisibility(View.VISIBLE);
-        get_fcm();
-        if (mAuth.getCurrentUser() != null)  open_home();
-
-
-        google_button.setOnClickListener(v -> GoogleSignIn());
-    }
-
-    private void get_fcm() {
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Log.w("TAG", "getInstanceId failed", task.getException());
-                        return;
-                    }
-
-                    // Get new Instance ID token
-                    String token = Objects.requireNonNull(task.getResult()).getToken();
-
-                    // Log and toast
-                    Log.d("TAG", "token is : " + token);
-                });
-    }
-
-    private void GoogleSignIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         progressBar.setVisibility(View.VISIBLE);
         google_button.setVisibility(View.INVISIBLE);
-        startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
-    }
-
-    private void open_home() {
-        Intent home = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(home);
-        finish();
+        startActivityForResult(mGoogleSignInClient.getSignInIntent(), GOOGLE_SIGN_IN);
     }
 
     @Override
@@ -91,31 +64,25 @@ public class MainActivity extends AppCompatActivity {
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 assert account != null;
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                Log.w("TAG", "SignInResult::Failed code="
-                        + e.getStatusCode() + ", Message: "
-                        + e.getMessage());
-            }
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                mAuth.signInWithCredential(credential)
+                        .addOnCompleteListener(this, new_task -> {
+                            if (new_task.isSuccessful()) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                open_home();
+                            } else {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } catch (ApiException ignored){}
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("TAG", "firebaseAuthWithGoogle:" + acct.getId());
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Log.d("TAG", "signInWithCredential:success");
-                        open_home();
-                    } else {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Log.w("TAG", "signInWithCredential:failure", task.getException());
-                        Toast.makeText(this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void open_home() {
+        startActivity(new Intent(MainActivity.this,HomeActivity.class));
+        finish();
     }
 
     @Override
