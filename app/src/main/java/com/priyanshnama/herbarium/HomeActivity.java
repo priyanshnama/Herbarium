@@ -39,7 +39,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Objects.requireNonNull(getSupportActionBar()).hide();
 
         gallery = findViewById(R.id.gallery);
         photo = findViewById(R.id.photo);
