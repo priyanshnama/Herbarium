@@ -9,4 +9,10 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="name">name</string>
+    <string name="botanical_name">Botanical Name</string>
+    <string name="family">Family</string>
+    <string name="medicine">Medicine</string>
+    <string name="parts_used">Parts Used</string>
+    <string name="image_of_leave">image of leave</string>
 </resources>
